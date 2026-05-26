@@ -1,6 +1,6 @@
 import re
 import PyPDF2
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import cosine_similarity
 
 def extract_text_from_pdf(pdf_path):
@@ -21,9 +21,13 @@ def clean_text(text):
     return text.lower()
 
 def get_keywords(text):
-    """Basic keyword extraction (jo words 3 letters se bade hain)"""
+    """Advanced keyword extraction: Stop words aur generic words ko ignore karna"""
+    custom_stop_words = {'skills', 'looking', 'developer', 'experience', 'required', 'years', 'work', 'good', 'knowledge', 'candidate', 'role', 'with', 'this'}
+    all_stop_words = ENGLISH_STOP_WORDS.union(custom_stop_words)
+    
     words = set(clean_text(text).split())
-    return {w for w in words if len(w) > 3}
+    filtered_keywords = {w for w in words if len(w) > 3 and w not in all_stop_words}
+    return filtered_keywords
 
 def evaluate_resume(pdf_path, jd_text):
     """Main function jo Resume aur JD ko compare karega"""
@@ -39,7 +43,6 @@ def evaluate_resume(pdf_path, jd_text):
          return {"error": "Could not extract text from Resume."}
 
     # 2. NLP Logic: TF-IDF & Cosine Similarity
-    # Yeh text ko vector (numbers) me convert karega aur unke beech ka angle map karega match nikalne ke liye
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform([clean_resume, clean_jd])
     similarity = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
@@ -54,7 +57,6 @@ def evaluate_resume(pdf_path, jd_text):
 
     return {
         "score": score,
-        # Top 10 keywords UI par bhejne ke liye
         "matched_keywords": matched[:10], 
         "missing_keywords": missing[:10]
     }
