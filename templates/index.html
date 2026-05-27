@@ -50,20 +50,22 @@
     function startEvaluation() {
         const resumeFile = document.getElementById('resumeFile').files[0];
         const jdText = document.getElementById('jobDescription').value;
+        const videoFile = document.getElementById('videoFile').files[0]; // Video Fetch karna
 
-        if (!resumeFile || !jdText) {
-            alert("Bhai, pehle Resume aur Job Description toh daal do!");
+        if (!resumeFile || !jdText || !videoFile) {
+            alert("Bhai, Resume, Job Description aur Video teeno daalna zaroori hai!");
             return;
         }
 
         // Show processing status
         document.getElementById('result-box').style.display = 'block';
-        document.getElementById('ai-response').innerHTML = "<b>🧠 AI is analyzing the Resume against the JD... Please wait.</b>";
+        document.getElementById('ai-response').innerHTML = "<b>🧠 AI is analyzing your Resume and Video... (isme 15-30 seconds lag sakte hain). Please wait! ⏳</b>";
 
-        // FormData prepare karna (Backend bhejne ke liye)
+        // FormData prepare karna
         let formData = new FormData();
         formData.append("resume", resumeFile);
         formData.append("jd", jdText);
+        formData.append("video", videoFile); // Video append karna
 
         fetch('/evaluate', {
             method: 'POST',
@@ -72,18 +74,26 @@
         .then(response => response.json())
         .then(data => {
             if(data.status === "success") {
-                // Formatting the result to show the Explainable AI proof
+                // UI par final report print karna
                 let resultHTML = `
-                    <h3 style="color: #007bff;">Match Score: ${data.resume_score}%</h3>
+                    <h3 style="color: #007bff;">📄 Resume Match Score: ${data.resume_score}%</h3>
                     <p><b>✅ Matched Skills:</b> ${data.matched_keywords.join(', ') || 'None found'}</p>
                     <p><b>❌ Missing Skills:</b> ${data.missing_keywords.join(', ') || 'None'}</p>
+                    <hr>
+                    <h3 style="color: #28a745;">🎥 Video AI Analysis (Gemini Flash)</h3>
+                    <p><b>💻 Technical Score:</b> ${data.technical_score} / 100</p>
+                    <p><b>🗣️ Confidence Score:</b> ${data.confidence_score} / 100</p>
+                    <p><b>🤖 AI Feedback:</b> ${data.video_feedback}</p>
                 `;
                 document.getElementById('ai-response').innerHTML = resultHTML;
             } else {
                 document.getElementById('ai-response').innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('ai-response').innerHTML = `<p style="color: red;">Server ya API me kuch error aaya. Terminal check karo.</p>`;
+        });
     }
 </script>
 
