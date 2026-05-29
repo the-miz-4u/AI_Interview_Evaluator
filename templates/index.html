@@ -155,15 +155,21 @@
     <div id="result-box">
         <div class="score-container">
             <div class="score-tile">
-                <span class="score-val" id="res-score">0%</span>
+                <div class="circular-progress" id="res-progress">
+                    <span class="score-val" id="res-score">0%</span>
+                </div>
                 <span class="score-label">Resume Match</span>
             </div>
             <div class="score-tile">
-                <span class="score-val" id="tech-score">0</span>
+                <div class="circular-progress" id="tech-progress">
+                    <span class="score-val" id="tech-score">0%</span>
+                </div>
                 <span class="score-label">Technical</span>
             </div>
             <div class="score-tile">
-                <span class="score-val" id="conf-score">0</span>
+                <div class="circular-progress" id="conf-progress">
+                    <span class="score-val" id="conf-score">0%</span>
+                </div>
                 <span class="score-label">Confidence</span>
             </div>
         </div>
@@ -181,6 +187,29 @@
 </div>
 
 <script>
+    // Animation Function
+    function animateGauge(elementId, progressId, targetValue, color) {
+        let progressElement = document.getElementById(progressId);
+        let valueElement = document.getElementById(elementId);
+        let progressValue = 0;
+        let speed = 20; // Animation speed in milliseconds
+
+        // Handle edge case if target is 0
+        if (targetValue === 0) {
+            valueElement.innerText = `0%`;
+            return;
+        }
+
+        let progress = setInterval(() => {
+            progressValue++;
+            valueElement.innerText = `${progressValue}%`;
+            progressElement.style.background = `conic-gradient(${color} ${progressValue * 3.6}deg, rgba(255,255,255,0.05) 0deg)`;
+
+            if (progressValue >= targetValue) {
+                clearInterval(progress);
+            }
+        }, speed);
+    }
     function startEvaluation() {
         const resumeFile = document.getElementById('resumeFile').files[0];
         const jdText = document.getElementById('jobDescription').value;
@@ -211,10 +240,12 @@
             if(data.status === "success") {
                 document.getElementById('result-box').style.display = 'block';
                 
-                // Set Values
-                document.getElementById('res-score').innerText = data.resume_score + "%";
-                document.getElementById('tech-score').innerText = data.technical_score + "/100";
-                document.getElementById('conf-score').innerText = data.confidence_score + "/100";
+                // Trigger Animations (ID, Progress ID, Target Value, Color)
+                animateGauge('res-score', 'res-progress', data.resume_score, '#3b82f6'); // Blue for Resume
+                animateGauge('tech-score', 'tech-progress', data.technical_score, '#10b981'); // Green for Technical
+                animateGauge('conf-score', 'conf-progress', data.confidence_score, '#a855f7'); // Purple for Confidence
+                
+                // Set Text Data
                 document.getElementById('ai-feedback').innerText = data.video_feedback;
                 document.getElementById('matched-skills').innerText = data.matched_keywords.join(', ') || 'None';
                 document.getElementById('missing-skills').innerText = data.missing_keywords.join(', ') || 'None';

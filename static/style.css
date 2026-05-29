@@ -1,0 +1,27 @@
+/* Animated Circular Gauges */
+        .circular-progress {
+            position: relative;
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            background: conic-gradient(rgba(255,255,255,0.1) 360deg, rgba(255,255,255,0.1) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            background-color: var(--bg); /* Keeps the inner circle dark */
+        }
+        .score-val {
+            position: relative;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fbbf24;
+        }
