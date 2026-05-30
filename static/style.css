@@ -25,3 +25,48 @@
             font-weight: 800;
             color: #fbbf24;
         }
+        /* AI Processing Loading State */
+        .ai-loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+        .ai-brain {
+            font-size: 5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-glow 1.5s infinite alternate;
+            position: relative;
+            z-index: 2;
+        }
+        .scanner-beam {
+            position: absolute;
+            width: 120px;
+            height: 4px;
+            background: #a855f7;
+            box-shadow: 0 0 15px 5px rgba(168, 85, 247, 0.6);
+            border-radius: 50%;
+            animation: scan-vertical 2s ease-in-out infinite;
+            z-index: 3;
+        }
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.9)); }
+        }
+        @keyframes scan-vertical {
+            0% { top: 20%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 70%; opacity: 0; }
+        }

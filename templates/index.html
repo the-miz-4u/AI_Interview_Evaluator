@@ -147,9 +147,12 @@
         <i class="fas fa-bolt"></i> RUN AI EVALUATION
     </button>
 
-    <div id="loading" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>AI is analyzing frames, audio, and text... Hold tight! ⚡</p>
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="ai-loader-container">
+            <i class="fas fa-brain ai-brain"></i>
+            <div class="scanner-beam"></div>
+            <p class="loading-text" id="dynamic-loading-text">Initializing AI Engine...</p>
+        </div>
     </div>
 
     <div id="result-box">
@@ -210,6 +213,9 @@
             }
         }, speed);
     }
+    // Global variable timer ke liye
+    let loadingInterval; 
+
     function startEvaluation() {
         const resumeFile = document.getElementById('resumeFile').files[0];
         const jdText = document.getElementById('jobDescription').value;
@@ -220,9 +226,25 @@
             return;
         }
 
-        // UI Reset & Show Loader
+        // UI Reset
         document.getElementById('result-box').style.display = 'none';
         document.getElementById('loading').style.display = 'block';
+
+        // 🟢 Dynamic Text Changer Logic
+        const loadingMessages = [
+            "Extracting audio & video frames... 🎥",
+            "Analyzing body language & eye contact... 👁️",
+            "Running NLP on your Resume... 📄",
+            "Cross-matching with Job Description... 🔍",
+            "Generating final AI feedback... 🧠"
+        ];
+        let msgIndex = 0;
+        document.getElementById('dynamic-loading-text').innerText = loadingMessages[msgIndex];
+        
+        loadingInterval = setInterval(() => {
+            msgIndex = (msgIndex + 1) % loadingMessages.length;
+            document.getElementById('dynamic-loading-text').innerText = loadingMessages[msgIndex];
+        }, 2500); // Har 2.5 second me text change hoga
 
         let formData = new FormData();
         formData.append("resume", resumeFile);
@@ -235,17 +257,18 @@
         })
         .then(response => response.json())
         .then(data => {
+            // 🔴 Loading khatam hone par timer band karna zaroori hai
+            clearInterval(loadingInterval);
             document.getElementById('loading').style.display = 'none';
             
             if(data.status === "success") {
                 document.getElementById('result-box').style.display = 'block';
                 
                 // Trigger Animations (ID, Progress ID, Target Value, Color)
-                animateGauge('res-score', 'res-progress', data.resume_score, '#3b82f6'); // Blue for Resume
-                animateGauge('tech-score', 'tech-progress', data.technical_score, '#10b981'); // Green for Technical
-                animateGauge('conf-score', 'conf-progress', data.confidence_score, '#a855f7'); // Purple for Confidence
+                animateGauge('res-score', 'res-progress', data.resume_score, '#3b82f6');
+                animateGauge('tech-score', 'tech-progress', data.technical_score, '#10b981');
+                animateGauge('conf-score', 'conf-progress', data.confidence_score, '#a855f7');
                 
-                // Set Text Data
                 document.getElementById('ai-feedback').innerText = data.video_feedback;
                 document.getElementById('matched-skills').innerText = data.matched_keywords.join(', ') || 'None';
                 document.getElementById('missing-skills').innerText = data.missing_keywords.join(', ') || 'None';
@@ -254,11 +277,13 @@
             }
         })
         .catch(error => {
+            clearInterval(loadingInterval);
             document.getElementById('loading').style.display = 'none';
             console.error('Error:', error);
             alert("Server connection failed!");
         });
     }
+    
 </script>
 
 </body>
