@@ -9,22 +9,26 @@ def analyze_resume_with_gemini(resume_text, jd_text):
 
     client = genai.Client(api_key=api_key)
 
-    # Prompt Engineering for strict JSON response (Updated for Recommended Questions)
+    # Advanced Prompt Engineering: Ensuring Dynamic Extraction
     prompt = f"""
     You are an Expert Technical Recruiter and ATS.
-    I will provide a Candidate's Resume Text and a Job Description.
-    Your task is to semantically analyze the fit based on skills, experience, and projects.
-    Also, generate 3 specific technical interview questions based on the 'missing_keywords' to test the candidate further.
+    Analyze the fit between the Candidate's Resume and the Job Description based on skills, experience, and projects.
     
     Resume Text: {resume_text}
     Job Description: {jd_text}
     
-    Return ONLY a valid JSON object in this exact format without any markdown blocks or extra text:
+    INSTRUCTIONS:
+    1. Calculate a realistic resume_score (0 to 100) based on alignment.
+    2. Extract ACTUAL matched skills present in both the resume and JD.
+    3. Extract ACTUAL missing skills required by the JD but missing in the resume.
+    4. Generate 3 interview questions specifically based on the REAL missing skills.
+    
+    Return ONLY a valid JSON object. Use the following STRUCTURE, but REPLACE the dummy values with your actual dynamic analysis:
     {{
-        "resume_score": 85,
-        "matched_keywords": ["Python", "Flask", "Machine Learning"],
-        "missing_keywords": ["AWS", "Docker"],
-        "recommended_questions": ["What is EC2 in AWS?", "Explain how Docker containers work.", "How do you deploy ML models?"]
+        "resume_score": <integer>,
+        "matched_keywords": ["actual_skill_1", "actual_skill_2"],
+        "missing_keywords": ["actual_missing_skill_1", "actual_missing_skill_2"],
+        "recommended_questions": ["Question 1 about missing skill?", "Question 2?", "Question 3?"]
     }}
     """
     
