@@ -1,4 +1,7 @@
+
 import os
+import random
+from google import genai
 import time
 import json
 from google import genai
@@ -58,9 +61,7 @@ def analyze_interview(video_path, jd_text):
         print(f"[WARNING] Video Analyzer API Failed: {e}")
         print("[INFO] Initiating Dynamic AI Fallback Evaluation...")
         
-        import random
-        import os
-        from google import genai
+        
         
         is_tech_role = False # Default assumption
         
