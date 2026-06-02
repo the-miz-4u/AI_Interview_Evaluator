@@ -112,6 +112,76 @@
             margin: 0 auto 15px;
         }
 
+        /* Animated Circular Gauges */
+        .circular-progress {
+            position: relative;
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            background: conic-gradient(rgba(255,255,255,0.1) 360deg, rgba(255,255,255,0.1) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            background-color: var(--bg);
+        }
+        .circular-progress .score-val {
+            position: relative;
+        }
+
+        /* AI Processing Loading State */
+        .ai-loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+        .ai-brain {
+            font-size: 5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-glow 1.5s infinite alternate;
+            position: relative;
+            z-index: 2;
+        }
+        .scanner-beam {
+            position: absolute;
+            width: 120px;
+            height: 4px;
+            background: #a855f7;
+            box-shadow: 0 0 15px 5px rgba(168, 85, 247, 0.6);
+            border-radius: 50%;
+            animation: scan-vertical 2s ease-in-out infinite;
+            z-index: 3;
+        }
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.9)); }
+        }
+        @keyframes scan-vertical {
+            0% { top: 20%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 70%; opacity: 0; }
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -176,6 +246,13 @@
                 <span class="score-label">Confidence</span>
             </div>
         </div>
+        
+        <div style="text-align: center; margin: 25px 0;">
+            <h3 style="color: #94a3b8; font-size: 1rem; margin-bottom: 10px;">Final Verdict</h3>
+            <span id="hiring-badge" style="padding: 10px 25px; border-radius: 50px; font-weight: 800; font-size: 1.2rem; background: rgba(255,255,255,0.1); border: 2px solid white; transition: all 0.3s ease;">
+                Pending...
+            </span>
+        </div>
 
         <div class="card" style="margin-top: 20px;">
             <h4 style="color: var(--secondary); margin-bottom: 10px;"><i class="fas fa-comment-dots"></i> AI Feedback</h4>
@@ -185,6 +262,12 @@
         <div class="card" style="margin-top: 15px;">
             <p><b>✅ Matched Skills:</b> <span id="matched-skills" style="color: #4ade80;"></span></p>
             <p><b>❌ Missing Skills:</b> <span id="missing-skills" style="color: #f87171;"></span></p>
+        </div>
+
+        <div class="card" style="margin-top: 15px; border-color: #f59e0b;">
+            <h4 style="color: #fbbf24; margin-bottom: 10px;"><i class="fas fa-question-circle"></i> Suggested Interview Questions</h4>
+            <ul id="recommended-questions" style="padding-left: 20px; color: #cbd5e1; line-height: 1.8;">
+                </ul>
         </div>
     </div>
 </div>
@@ -197,7 +280,6 @@
         let progressValue = 0;
         let speed = 20; // Animation speed in milliseconds
 
-        // Handle edge case if target is 0
         if (targetValue === 0) {
             valueElement.innerText = `0%`;
             return;
@@ -213,6 +295,7 @@
             }
         }, speed);
     }
+    
     // Global variable timer ke liye
     let loadingInterval; 
 
@@ -230,7 +313,7 @@
         document.getElementById('result-box').style.display = 'none';
         document.getElementById('loading').style.display = 'block';
 
-        // 🟢 Dynamic Text Changer Logic
+        // Dynamic Text Changer Logic
         const loadingMessages = [
             "Extracting audio & video frames... 🎥",
             "Analyzing body language & eye contact... 👁️",
@@ -244,7 +327,7 @@
         loadingInterval = setInterval(() => {
             msgIndex = (msgIndex + 1) % loadingMessages.length;
             document.getElementById('dynamic-loading-text').innerText = loadingMessages[msgIndex];
-        }, 2500); // Har 2.5 second me text change hoga
+        }, 2500);
 
         let formData = new FormData();
         formData.append("resume", resumeFile);
@@ -257,21 +340,48 @@
         })
         .then(response => response.json())
         .then(data => {
-            // 🔴 Loading khatam hone par timer band karna zaroori hai
             clearInterval(loadingInterval);
             document.getElementById('loading').style.display = 'none';
             
             if(data.status === "success") {
                 document.getElementById('result-box').style.display = 'block';
                 
-                // Trigger Animations (ID, Progress ID, Target Value, Color)
+                // Trigger Animations
                 animateGauge('res-score', 'res-progress', data.resume_score, '#3b82f6');
                 animateGauge('tech-score', 'tech-progress', data.technical_score, '#10b981');
                 animateGauge('conf-score', 'conf-progress', data.confidence_score, '#a855f7');
                 
+                // Set text fields
                 document.getElementById('ai-feedback').innerText = data.video_feedback;
                 document.getElementById('matched-skills').innerText = data.matched_keywords.join(', ') || 'None';
                 document.getElementById('missing-skills').innerText = data.missing_keywords.join(', ') || 'None';
+
+                // --- NEW LOGIC: Update Hiring Badge ---
+                let badge = document.getElementById('hiring-badge');
+                // Use default if undefined
+                let statusText = data.hiring_status || "Score Processed";
+                let statusColor = data.status_color || "#94a3b8"; 
+                
+                badge.innerText = statusText;
+                badge.style.borderColor = statusColor;
+                badge.style.color = statusColor;
+                badge.style.boxShadow = `0 0 15px ${statusColor}40`; // Soft glow based on status
+
+                // --- NEW LOGIC: Update Recommended Questions ---
+                let qList = document.getElementById('recommended-questions');
+                qList.innerHTML = ""; // Clear purane questions
+                if (data.recommended_questions && data.recommended_questions.length > 0) {
+                    data.recommended_questions.forEach(q => {
+                        let li = document.createElement('li');
+                        li.innerText = q;
+                        qList.appendChild(li);
+                    });
+                } else {
+                    let li = document.createElement('li');
+                    li.innerText = "No specific follow-up questions generated.";
+                    qList.appendChild(li);
+                }
+                
             } else {
                 alert("Error: " + data.message);
             }
@@ -283,7 +393,6 @@
             alert("Server connection failed!");
         });
     }
-    
 </script>
 
 </body>

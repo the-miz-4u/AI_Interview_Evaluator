@@ -61,6 +61,46 @@ def evaluate_candidate():
         if "error" in video_result:
             return jsonify({"status": "error", "message": video_result["error"]})
 
+        # (Iske upar video_result aur cleanup ka code hai)
+
+        if "error" in video_result:
+            return jsonify({"status": "error", "message": video_result["error"]})
+
+        # --- NAYA LOGIC: Hiring Recommendation ---
+        res_score = nlp_result.get("resume_score", 0)
+        tech_score = video_result.get("technical_score", 0)
+        conf_score = video_result.get("confidence_score", 0)
+        
+        # Weighted Average (Tech ko zyada weightage)
+        total_score = (res_score * 0.3) + (tech_score * 0.5) + (conf_score * 0.2)
+        
+        if total_score >= 80:
+            hiring_status = "Strong Hire 🌟"
+            status_color = "#4ade80" # Green
+        elif total_score >= 65:
+            hiring_status = "Hire ✅"
+            status_color = "#3b82f6" # Blue
+        elif total_score >= 50:
+            hiring_status = "Maybe / Needs Review ⚠️"
+            status_color = "#fbbf24" # Yellow
+        else:
+            hiring_status = "Reject ❌"
+            status_color = "#f87171" # Red
+
+        # Send final combined report
+        return jsonify({
+            "status": "success",
+            "message": "Evaluation Complete!",
+            "resume_score": res_score,
+            "matched_keywords": nlp_result.get("matched_keywords", []),
+            "missing_keywords": nlp_result.get("missing_keywords", []),
+            "recommended_questions": nlp_result.get("recommended_questions", ["No questions generated."]),
+            "technical_score": tech_score,
+            "confidence_score": conf_score,
+            "video_feedback": video_result.get("feedback", "No feedback generated."),
+            "hiring_status": hiring_status,
+            "status_color": status_color
+        })
         # Send final combined report (Nayi keys ke sath update kiya gaya hai)
         return jsonify({
             "status": "success",

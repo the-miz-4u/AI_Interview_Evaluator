@@ -9,11 +9,12 @@ def analyze_resume_with_gemini(resume_text, jd_text):
 
     client = genai.Client(api_key=api_key)
 
-    # Prompt Engineering for strict JSON response
+    # Prompt Engineering for strict JSON response (Updated for Recommended Questions)
     prompt = f"""
-    You are an Expert Technical Recruiter and ATS (Applicant Tracking System).
+    You are an Expert Technical Recruiter and ATS.
     I will provide a Candidate's Resume Text and a Job Description.
     Your task is to semantically analyze the fit based on skills, experience, and projects.
+    Also, generate 3 specific technical interview questions based on the 'missing_keywords' to test the candidate further.
     
     Resume Text: {resume_text}
     Job Description: {jd_text}
@@ -22,9 +23,11 @@ def analyze_resume_with_gemini(resume_text, jd_text):
     {{
         "resume_score": 85,
         "matched_keywords": ["Python", "Flask", "Machine Learning"],
-        "missing_keywords": ["AWS", "Docker"]
+        "missing_keywords": ["AWS", "Docker"],
+        "recommended_questions": ["What is EC2 in AWS?", "Explain how Docker containers work.", "How do you deploy ML models?"]
     }}
     """
+    
 
     try:
         print("Pinging Gemini API for Resume Semantic Match...")
