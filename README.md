@@ -39,7 +39,7 @@ AI Interview Insight is a next-generation HR-tech application designed to automa
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/the-miz4u/ai-interview-insight.git](https://github.com/yourusername/ai-interview-insight.git)
+git clone [https://github.com/the-miz4u/ai-interview-insight.git](https://github.com/the-miz4u/ai-interview-insight.git)
 cd ai-interview-insight
 ```
 
