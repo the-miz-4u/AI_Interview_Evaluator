@@ -73,5 +73,3 @@ Start Command: gunicorn app:app
 
 👨‍💻 Developed By
 Manish Sharma | UEM,Jaipur
-
-Feel free to fork this project, submit pull requests, or reach out if you have any questions about the architecture!
