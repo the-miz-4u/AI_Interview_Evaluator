@@ -3,6 +3,7 @@
 **Advanced Multimodal Assessment Platform for Engineers**
 
 AI Interview Insight is a next-generation HR-tech application designed to automate and enhance the technical recruitment process. By leveraging Multimodal Large Language Models (LLMs), it concurrently analyzes a candidate's video interview, parses their resume, and cross-references it with a target Job Description (JD) to generate a comprehensive, bias-free hiring verdict.
+
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/deede475-ce7f-4213-92a3-2b3dd601d28d" />
 
 
