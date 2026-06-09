@@ -65,12 +65,38 @@ cd ai-interview-insight
    python app.py
    Navigate to http://127.0.0.1:5000 in your web browser.
 
-## Deployment
-This project is configured for seamless deployment on cloud platforms like Render or Heroku using the provided requirements.txt and Gunicorn WSGI server.
+---
 
-Build Command: pip install -r requirements.txt
+## ☁️ Cloud Deployment (Production Ready)
 
-Start Command: gunicorn app:app
+This application is fully optimized for seamless deployment on modern cloud hosting platforms like **Render**, **Heroku**, or **AWS**. 
 
-👨‍💻 Developed By
-Manish Sharma | UEM,Jaipur
+**Standard WSGI Configuration:**
+* 🛠️ **Build Command:** `pip install -r requirements.txt`
+* 🚀 **Start Command:** `gunicorn app:app`
+
+> **Note:** Ensure that your `GEMINI_API_KEY` is securely added to the Environment Variables/Secrets of your chosen hosting provider before initiating the deploy.
+
+---
+---
+
+## ☁️ Cloud Deployment (Production Ready)
+
+This application is fully optimized for seamless deployment on modern cloud hosting platforms like **Render**, **Heroku**, or **AWS**. 
+
+**Standard WSGI Configuration:**
+* 🛠️ **Build Command:** `pip install -r requirements.txt`
+* 🚀 **Start Command:** `gunicorn app:app`
+
+> **Note:** Ensure that your `GEMINI_API_KEY` is securely added to the Environment Variables/Secrets of your chosen hosting provider before initiating the deploy.
+
+---
+
+## 👨‍💻 Developed By
+
+**Manish Sharma** 🎓 *B.Tech Computer Science & Engineering | University of Engineering and Management (UEM), Jaipur*
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/manish-sharma-0000172a0)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/the-miz-4u)
+
+*If you found this project helpful or insightful, don't forget to leave a ⭐ on the repository!*
