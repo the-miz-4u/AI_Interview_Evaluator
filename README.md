@@ -97,6 +97,7 @@ This application is fully optimized for seamless deployment on modern cloud host
 **Manish Sharma** 🎓 *B.Tech Computer Science & Engineering | University of Engineering and Management (UEM), Jaipur*
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/manish-sharma-0000172a0)
+
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/the-miz-4u)
 
 *If you found this project helpful or insightful, don't forget to leave a ⭐ on the repository!*
